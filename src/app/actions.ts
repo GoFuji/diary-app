@@ -1,0 +1,32 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { getSupabaseClient } from "@/lib/supabase";
+
+export async function createDailyReport(formData: FormData) {
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    throw new Error("Supabase environment variables are not configured.");
+  }
+
+  const title = String(formData.get("title") ?? "").trim();
+  const content = String(formData.get("content") ?? "").trim();
+  const reportDate = String(formData.get("report_date") ?? "").trim();
+
+  if (!title || !content) {
+    return;
+  }
+
+  const { error } = await supabase.from("daily_reports").insert({
+    title,
+    content,
+    report_date: reportDate || new Date().toISOString().slice(0, 10),
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/");
+}
