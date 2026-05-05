@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTodayInJapan } from "@/lib/date";
 import { getSupabaseClient } from "@/lib/supabase";
 
 export async function createDailyReport(formData: FormData) {
@@ -21,7 +22,7 @@ export async function createDailyReport(formData: FormData) {
   const { error } = await supabase.from("daily_reports").insert({
     title,
     content,
-    report_date: reportDate || new Date().toISOString().slice(0, 10),
+    report_date: reportDate || getTodayInJapan(),
   });
 
   if (error) {

@@ -1,4 +1,5 @@
 import { createDailyReport } from "./actions";
+import { getTodayInJapan } from "@/lib/date";
 import { type DailyReport, getSupabaseClient } from "@/lib/supabase";
 
 const text = {
@@ -46,7 +47,7 @@ async function getDailyReports() {
 
 export default async function Home() {
   const { reports, isConfigured, error } = await getDailyReports();
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getTodayInJapan();
 
   return (
     <main className="min-h-screen bg-[#f7f5f0] text-[#222222]">
